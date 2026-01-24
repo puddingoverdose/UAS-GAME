@@ -2,14 +2,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.IO;
-using System.Collections.Generic;
 
 [System.Serializable]
 public class CropInventory
 {
     public int carrots = 0;
     public int wheat = 0;
-    public int tomatoes = 0;
+    public int cabbages = 0;
 }
 
 public class GameManager : MonoBehaviour
@@ -21,17 +20,15 @@ public class GameManager : MonoBehaviour
     public GameObject gameplayUI;
     
     [Header("Student Info")]
-    public TextMeshProUGUI studentInfoText;
-    public string studentName = "Ridho Mulia";
-    public string studentID = "2702327103";
+    public string studentName = "PUT YOUR NAME HERE";
+    public string studentID = "PUT YOUR ID HERE";
     
     [Header("Crop UI")]
     public TextMeshProUGUI carrotText;
     public TextMeshProUGUI wheatText;
-    public TextMeshProUGUI tomatoText;
+    public TextMeshProUGUI cabbageText;
     
-    [Header("Game State")]
-    public bool isPaused = false;
+    private bool isPaused = false;
     private CropInventory inventory;
     private string saveFilePath;
 
@@ -56,14 +53,12 @@ public class GameManager : MonoBehaviour
         UpdateCropUI();
         ShowWelcomeScreen();
         
-        if (studentInfoText != null)
-        {
-            studentInfoText.text = $"Name: {studentName}\nStudent ID: {studentID}";
-        }
+        Debug.Log("GameManager started!");
     }
 
     void Update()
     {
+        // ESC key pauses
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             TogglePause();
@@ -73,37 +68,57 @@ public class GameManager : MonoBehaviour
     public void ShowWelcomeScreen()
     {
         if (welcomePanel != null)
-        {
             welcomePanel.SetActive(true);
-            if (gameplayUI != null)
-                gameplayUI.SetActive(false);
-            Time.timeScale = 0;
-            isPaused = true;
-        }
+        
+        if (gameplayUI != null)
+            gameplayUI.SetActive(false);
+        
+        Time.timeScale = 0; // Pause game
+        isPaused = true;
+        
+        Debug.Log("Welcome screen shown - game paused");
     }
 
     public void StartGame()
     {
+        Debug.Log("START BUTTON CLICKED!");
+        
         if (welcomePanel != null)
-        {
             welcomePanel.SetActive(false);
-            if (gameplayUI != null)
-                gameplayUI.SetActive(true);
-            Time.timeScale = 1;
-            isPaused = false;
-        }
+        
+        if (gameplayUI != null)
+            gameplayUI.SetActive(true);
+        
+        Time.timeScale = 1; // Unpause game
+        isPaused = false;
+        
+        Debug.Log("Game started - unpaused");
     }
 
     public void TogglePause()
     {
         isPaused = !isPaused;
         
-        if (welcomePanel != null)
-            welcomePanel.SetActive(isPaused);
-        if (gameplayUI != null)
-            gameplayUI.SetActive(!isPaused);
-        
-        Time.timeScale = isPaused ? 0 : 1;
+        if (isPaused)
+        {
+            // Show pause menu
+            if (welcomePanel != null)
+                welcomePanel.SetActive(true);
+            if (gameplayUI != null)
+                gameplayUI.SetActive(false);
+            Time.timeScale = 0;
+            Debug.Log("Game paused");
+        }
+        else
+        {
+            // Resume game
+            if (welcomePanel != null)
+                welcomePanel.SetActive(false);
+            if (gameplayUI != null)
+                gameplayUI.SetActive(true);
+            Time.timeScale = 1;
+            Debug.Log("Game resumed");
+        }
     }
 
     public void AddCrop(string cropName)
@@ -116,32 +131,34 @@ public class GameManager : MonoBehaviour
             case "wheat":
                 inventory.wheat++;
                 break;
-            case "tomato":
-            case "tomatoes":
-                inventory.tomatoes++;
+            case "cabbage":
+            case "cabbages":
+                inventory.cabbages++;
                 break;
         }
         
         UpdateCropUI();
         SaveCropData();
-        Debug.Log($"{cropName} added! Total: {inventory.carrots} carrots, {inventory.wheat} wheat, {inventory.tomatoes} tomatoes");
+        Debug.Log($"Crop added: {cropName}. Totals - Carrots: {inventory.carrots}, Wheat: {inventory.wheat}, Cabbages: {inventory.cabbages}");
     }
 
     void UpdateCropUI()
     {
         if (carrotText != null)
-            carrotText.text = $"🥕 {inventory.carrots}";
+            carrotText.text = "Carrots: " + inventory.carrots;
+        
         if (wheatText != null)
-            wheatText.text = $"🌾 {inventory.wheat}";
-        if (tomatoText != null)
-            tomatoText.text = $"🍅 {inventory.tomatoes}";
+            wheatText.text = "Wheat: " + inventory.wheat;
+        
+        if (cabbageText != null)
+            cabbageText.text = "Cabbages: " + inventory.cabbages;
     }
 
     void SaveCropData()
     {
         string json = JsonUtility.ToJson(inventory, true);
         File.WriteAllText(saveFilePath, json);
-        Debug.Log($"Saved to: {saveFilePath}");
+        Debug.Log("Crop data saved to: " + saveFilePath);
     }
 
     void LoadCropData()
@@ -150,12 +167,12 @@ public class GameManager : MonoBehaviour
         {
             string json = File.ReadAllText(saveFilePath);
             inventory = JsonUtility.FromJson<CropInventory>(json);
-            Debug.Log($"Loaded from: {saveFilePath}");
+            Debug.Log("Crop data loaded!");
         }
         else
         {
             inventory = new CropInventory();
-            Debug.Log("No save file, starting fresh");
+            Debug.Log("No save file found, starting fresh");
         }
     }
 }
