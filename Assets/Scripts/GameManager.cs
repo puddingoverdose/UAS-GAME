@@ -20,8 +20,8 @@ public class GameManager : MonoBehaviour
     public GameObject gameplayUI;
     
     [Header("Student Info")]
-    public string studentName = "PUT YOUR NAME HERE";
-    public string studentID = "PUT YOUR ID HERE";
+    public string studentName = "Ridho Mulia";
+    public string studentID = "2702327103";
     
     [Header("Crop UI")]
     public TextMeshProUGUI carrotText;
