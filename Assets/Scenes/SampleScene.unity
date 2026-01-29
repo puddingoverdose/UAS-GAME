@@ -717,13 +717,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 983b19a68a387b14aad370db76ef682e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  welcomePanel: {fileID: 0}
-  gameplayUI: {fileID: 0}
+  welcomePanel: {fileID: 1232963870}
+  gameplayUI: {fileID: 1164653317}
   studentName: Ridho Mulia
   studentID: 2702327103
-  carrotText: {fileID: 0}
-  wheatText: {fileID: 0}
-  cabbageText: {fileID: 0}
+  carrotText: {fileID: 926709060}
+  wheatText: {fileID: 1615742868}
+  cabbageText: {fileID: 1731854462}
 --- !u!1 &798427336
 GameObject:
   m_ObjectHideFlags: 0
